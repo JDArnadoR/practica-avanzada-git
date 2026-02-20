@@ -11,9 +11,9 @@ class TicTacToe:
         self.board = [["" for _ in range(3)] for _ in range(3)]
         self.buttons = []
 
-        self.create_board()
+        self.create_board_main()
 
-    def create_board(self):
+    def create_board_main(self):
         for row in range(3):
             button_row = []
             for col in range(3):
