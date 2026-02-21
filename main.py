@@ -12,13 +12,14 @@ class TicTacToe:
         self.current_player = "X"
         self.board = [["" for _ in range(3)] for _ in range(3)]
         self.buttons = []
+        self.game_over = False
 
         self.title_label = tk.Label(
             root,
             text="TIC TAC TOE",
             font=("Helvetica", 28, "bold"),
             bg="#1e1e2f",
-            fg="#ffffff"
+            fg="white"
         )
         self.title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
@@ -27,15 +28,16 @@ class TicTacToe:
             text="Turno: X",
             font=("Helvetica", 16),
             bg="#1e1e2f",
-            fg="#00d4ff"
+            fg="#00ff99"
         )
         self.turn_label.grid(row=1, column=0, columnspan=3, pady=5)
 
         self.create_board()
 
+        # 🔄 Botón de reinicio manual
         self.reset_button = tk.Button(
             root,
-            text="Reiniciar",
+            text="Reiniciar tablero",
             font=("Helvetica", 14, "bold"),
             bg="#ff4d4d",
             fg="white",
@@ -66,7 +68,7 @@ class TicTacToe:
             self.buttons.append(button_row)
 
     def make_move(self, row, col):
-        if self.board[row][col] == "":
+        if self.board[row][col] == "" and not self.game_over:
             self.board[row][col] = self.current_player
             self.buttons[row][col].config(
                 text=self.current_player,
@@ -76,11 +78,11 @@ class TicTacToe:
             winner = self.check_winner()
             if winner:
                 self.highlight_winner(winner)
+                self.game_over = True
                 messagebox.showinfo("Fin del juego", f"¡Jugador {self.current_player} gana!")
-                self.reset_game()
             elif self.is_draw():
+                self.game_over = True
                 messagebox.showinfo("Fin del juego", "¡Es un empate!")
-                self.reset_game()
             else:
                 self.switch_player()
 
@@ -92,21 +94,17 @@ class TicTacToe:
         )
 
     def check_winner(self):
-        # Filas
         for i in range(3):
             if self.board[i][0] == self.board[i][1] == self.board[i][2] != "":
                 return [(i, 0), (i, 1), (i, 2)]
 
-        # Columnas
         for i in range(3):
             if self.board[0][i] == self.board[1][i] == self.board[2][i] != "":
                 return [(0, i), (1, i), (2, i)]
 
-        # Diagonal principal
         if self.board[0][0] == self.board[1][1] == self.board[2][2] != "":
             return [(0, 0), (1, 1), (2, 2)]
 
-        # Diagonal secundaria
         if self.board[0][2] == self.board[1][1] == self.board[2][0] != "":
             return [(0, 2), (1, 1), (2, 0)]
 
@@ -126,7 +124,9 @@ class TicTacToe:
     def reset_game(self):
         self.current_player = "X"
         self.board = [["" for _ in range(3)] for _ in range(3)]
-        self.turn_label.config(text="Turno: X", fg="#00d4ff")
+        self.game_over = False
+
+        self.turn_label.config(text="Turno: X", fg="#00ff99")
 
         for row in self.buttons:
             for button in row:
